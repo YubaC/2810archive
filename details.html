@@ -84,20 +84,6 @@
 
         // 加载档案列表
         function loadData() {
-            fetch(db.fetch_url + db.base + url + "/" + "20181211升旗.rar", {
-                method: "GET",
-                headers: {
-                    Authorization: "token " + token,
-                    Accept: "application/vnd.github.v3+json"
-                }
-            }).then((res) => {
-                return res.json();
-            }).then((data) => {
-                return data.download_url;
-            }).then((data) => {
-                // 执行下载文件
-                // window.location.href = data;
-            })
             fetch(db.fetch_url + db.base + url + "/" + url + ".md", {
                 method: "GET",
                 headers: {

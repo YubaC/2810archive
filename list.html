@@ -88,7 +88,7 @@
     </style>
     <script src="./js/functions.js"></script>
     <script>
-        const indexSrc = "data-test/index.json";
+        const indexSrc = "index.json";
         var results = [];
         var key = getUrlParam("search")[0] || "";
         // function getUrlParam(name) {
@@ -125,7 +125,17 @@
             }
 
             // 获取索引
-            $.getJSON(indexSrc, (data) => {
+            fetch(db.fetch_url + indexSrc, {
+                method: "GET",
+                headers: {
+                    Authorization: "token " + token,
+                    Accept: "application/vnd.github.v3+json"
+                }
+            }).then((res) => {
+                return res.json();
+            }).then((data) => {
+                return JSON.parse(b64DecodeUnicode(data.content));
+            }).then((data) => {
                 var key = getUrlParam("search")[0];
                 // data的一个示例为：
                 // {
