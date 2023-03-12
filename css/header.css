@@ -1,0 +1,228 @@
+/**/
+
+#header {
+    height: 60px;
+    background: #262626;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    top: 0;
+    z-index: 999;
+}
+
+#logo {
+    float: left;
+}
+
+#nav {
+    margin-left: 70px;
+    float: left;
+}
+
+#nav>li {
+    float: left;
+    position: relative;
+    line-height: 60px;
+}
+
+#nav>li>a {
+    color: #bebebe;
+    display: block;
+    padding: 0 20px;
+}
+
+#nav li a:hover {
+    text-decoration: none;
+}
+
+#nav li {
+    color: #bebebe;
+    font-size: 14px;
+}
+
+#nav li.current {
+    background: #373737;
+}
+
+#nav li .child {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: max-content;
+    background: #262626;
+    z-index: 200;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, .3);
+}
+
+#nav li .child .block {
+    width: max-content;
+    float: left;
+}
+
+#nav li .gsap-docs-offline {
+    margin: 10px 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    clear: both;
+    text-align: center;
+}
+
+#nav li .gsap-docs-offline a {
+    border-radius: 3px;
+    background: #ccc;
+    color: #fff;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+    background-image: linear-gradient(to bottom, #575757, #414141);
+    padding: 5px 15px;
+}
+
+#nav li .child .block p {
+    padding: 0 20px;
+    font-weight: bold;
+    line-height: 40px;
+    color: #fff;
+    margin-top: 10px;
+}
+
+#nav li ul {}
+
+#nav li ul li {}
+
+#nav li ul a {
+    color: #bebebe;
+    display: block;
+    font-weight: 300;
+    padding: 0 20px;
+    line-height: 40px;
+}
+
+#nav li ul a:hover {
+    background: #373737;
+    color: #bebebe;
+}
+
+#search {
+    float: right;
+    margin-top: 18px;
+}
+
+#search #search-keyword {
+    border-radius: 15px;
+    padding: 5px 7px;
+    color: #999;
+    border: none;
+    outline: none;
+    background: #ddd;
+}
+
+#search #search-keyword:focus {
+    border-color: none;
+    transition: border-color 1s ease-in;
+    background: #fff;
+}
+
+#search .search-submit {
+    border-radius: 15px;
+    border: none;
+    background: #090;
+    color: #fff;
+    cursor: pointer;
+    padding: 4px 7px;
+    outline: none;
+}
+
+#search .search-submit:hover {
+    background: #006b00;
+    transition: background-color 0.3s ease-in;
+}
+
+
+/**/
+
+#usage h2 {
+    font-size: 125%;
+    margin: 1em 0 0.5em;
+}
+
+#usage p {
+    margin-top: 1em;
+}
+
+#ease h1 {
+    margin: 50px 0;
+}
+
+#ease h2 {
+    margin-top: 50px;
+}
+
+#ease p {
+    margin: 0.5em 0;
+}
+
+#license p {
+    margin-bottom: 0.5em;
+}
+
+#compatible .notice {
+    font-size: 12px;
+    color: #676767;
+}
+
+#compatible .notice li {
+    list-style: inside;
+}
+
+#footer {
+    font-size: 12px;
+    background-color: #222;
+    color: #999;
+}
+
+#footer .nav {
+    padding-bottom: 20px;
+}
+
+#footer #describe {
+    float: left;
+    width: 40%;
+    padding-right: 70px;
+    padding-top: 30px;
+    box-sizing: border-box;
+}
+
+#footer h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+#footer #describe p {
+    letter-spacing: 1px;
+    line-height: 20px;
+    color: rgba(255, 255, 255, 0.25);
+}
+
+#footer .links {
+    width: 20%;
+    float: left;
+    padding-top: 30px;
+}
+
+#footer .links li {
+    margin-bottom: 5px;
+}
+
+#footer .links a {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+#footer .links a:hover {
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: underline;
+}
+
+#footer .copyright {
+    padding: 15px 0 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.065);
+}

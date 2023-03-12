@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 | 二十八级十班安全局档案馆</title>
+
+    <!-- <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/style.css"> -->
+    <link rel="stylesheet" href="lib/fontawesome-free-5.15.4-web/css/all.min.css">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/common.css">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/jquery/js/jquery-3.6.3.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <div id="header"></div>
+    </header>
+    <main class="pt-3 pb-3">
+        <!-- <div class="card container-fluid pt-3 mt-3 col-sm-10">
+            <div class="card-body">
+                <div class="m-4">
+                    <img src="./images/logo.svg" alt="安全局档案馆Logo" style="width: 200px; height: 200px;"
+                        class="mx-auto d-block">
+                </div>
+
+                <div class="site-title">
+                    <h1 class="diaplay-1">济南舜耕中学</h1>
+                    <h1 class="diaplay-1">二十八级十班安全局</h1>
+                    <h1 class="diaplay-1">档案馆</h1>
+                </div>
+            </div>
+        </div> -->
+
+        <div class="card container-fluid pt-3 mt-3 col-sm-10">
+            <div class="card-header">分类归档</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a href="list.html?search=&type=image">
+                            <div class="card m-4">
+                                <div class="card-body text-center">
+                                    <i class="far fa-file-image display-1" aria-hidden="true"></i>
+                                    <br>图片
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="list.html?search=&type=video">
+                            <div class="card m-4">
+                                <div class="card-body text-center">
+                                    <i class="far fa-file-video display-1" aria-hidden="true"></i>
+                                    <br>视频
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="list.html?search=&type=document">
+                            <div class="card m-4">
+                                <div class="card-body text-center">
+                                    <i class="far fa-file-alt display-1" aria-hidden="true"></i>
+                                    <br>文档
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="list.html?search=&type=other">
+                            <div class="card m-4">
+                                <div class="card-body text-center">
+                                    <i class="far fa-file-archive display-1" aria-hidden="true"></i>
+                                    <br>其它
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer id="footer" class="bg-dark"></footer>
+
+    <style>
+        main {
+            background-image: url(./images/login-bg.jpg);
+            background-size: 100% 100%;
+            background-repeat: no-repeat, repeat;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .site-title h1 {
+            /* 使得三行字最终等长，自动调节字间距 */
+            text-align: justify;
+            width: 100%;
+        }
+
+        .site-title h1::after {
+            display: inline-block;
+            content: "";
+            width: 100%;
+        }
+    </style>
+
+    <script>
+
+        function loadData() {
+            // 使用刚刚的token，从github的仓库中获取数据
+
+            // alert("hello,world!");
+            // // 1. 获取url中的id
+            // var id = getUrlParam("id");
+            // // 2. 发送ajax请求
+            // $.ajax({
+            //     url: "http://localhost:8080/api/v1/index/article",
+            //     type: "get",
+            //     data: {
+            //         id: id
+            //     },
+            //     success: function (res) {
+            //         if (res.code == 200) {
+            //             // 3. 渲染数据
+            //             var data = res.data;
+            //             $("#title").html(data.title);
+            //             $("#author").html(data.author);
+            //             $("#publishDate").html(data.publishDate);
+            //             $("#content").html(data.content);
+            //         } else {
+            //             alert(res.msg);
+            //         }
+            //     }
+            // });
+        }
+
+
+    </script>
+    <script src="js/common.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>档案列表 | 二十八级十班安全局档案馆</title>
+
+    <!-- <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/style.css"> -->
+    <link rel="stylesheet" href="lib/fontawesome-free-5.15.4-web/css/all.min.css">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/common.css">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/jquery/js/jquery-3.6.3.min.js"></script>
+    <style>
+        #results .card-header {
+            background-color: var(--bs-secondary);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div id="header"></div>
+
+        <nav class="breadcrumb ms-4 mt-4">
+            <a class="breadcrumb-item" href="index.html">档案馆</a>
+            <a class="breadcrumb-item" href="archives.html">档案室</a>
+            <span class="breadcrumb-item active">档案列表</span>
+        </nav>
+    </header>
+
+    <main class="pt-3 pb-3">
+        <div class="card container-fluid pt-3 mt-3 col-sm-10">
+            <div class="card-header">筛选档案</div>
+            <div class="card-body">
+                <form action="list.html" method="get">
+                    <div class="d-flex flex-row-reverse mb-3 mt-1">
+                        <div>
+                            <button type="submit" class="btn btn-primary">搜索</button>
+                        </div>
+                        <div class="flex-grow-1 me-4">
+                            <label for="search" class="form-label visually-hidden">输入关键字：</label>
+                            <input type="text" class="form-control" id="search" name="search" placeholder="留空以查看全部">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 mt-1 ms-1" style="word-break: keep-all;">
+                        <div class="form-check col-2 me-2">
+                            <input type="checkbox" class="form-check-input" id="images" name="type" value="image"
+                                checked>
+                            <label class="form-check-label" for="images">图片</label>
+                        </div>
+                        <div class="form-check col-2 me-2">
+                            <input type="checkbox" class="form-check-input" id="videos" name="type" value="video"
+                                checked>
+                            <label class="form-check-label" for="videos">视频</label>
+                        </div>
+                        <div class="form-check col-2 me-2">
+                            <input type="checkbox" class="form-check-input" id="documents" name="type" value="document"
+                                checked>
+                            <label class="form-check-label" for="documents">文档</label>
+                        </div>
+                        <div class="form-check col-2 me-2">
+                            <input type="checkbox" class="form-check-input" id="others" name="type" value="other"
+                                checked>
+                            <label class="form-check-label" for="others">其它</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card container-fluid pt-3 mt-3 mb-4 col-sm-10">
+            <!-- <div class="card-header">分类归档</div> -->
+            <div class="card-body">
+                <div id="results" class="row"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer id="footer" class="bg-dark"></footer>
+
+    <style>
+
+    </style>
+    <script src="./js/functions.js"></script>
+    <script>
+        const indexSrc = "data-test/index.json";
+        var results = [];
+        var key = getUrlParam("search")[0] || "";
+        // function getUrlParam(name) {
+        //     // 用该属性获取页面 URL 地址从问号 (?) 开始的 URL（查询部分）
+        //     var url = window.location.search;
+        //     // 正则筛选地址栏
+        //     var reg = new RegExp("(^|&amp;)" + name + "=([^&amp;]*)(&amp;|$)");
+        //     // 匹配目标参数
+        //     var results = url.substr(1).match(reg);
+        //     //返回参数值
+        //     return results ? decodeURIComponent(results[2]) : null;
+        // }
+
+        function loadData() {
+            // document.title = `${key} | 二十八级十班安全局档案馆搜索`;
+            $("#search").val(key);
+
+            // 处理高级搜索
+            // 如果url参数存在type，那么所有的复选框都不选择，然后根据url参数选择
+            var type = getUrlParam("type");
+            if (type.length) {
+                $("#images").prop("checked", false);
+                $("#videos").prop("checked", false);
+                $("#documents").prop("checked", false);
+                $("#others").prop("checked", false);
+                for (var i = 0; i < type.length; i++) {
+                    $(`#${type[i]}s`).prop("checked", true);
+                }
+            } else {
+                $("#images").prop("checked", true);
+                $("#videos").prop("checked", true);
+                $("#documents").prop("checked", true);
+                $("#others").prop("checked", true);
+            }
+
+            // 获取索引
+            $.getJSON(indexSrc, (data) => {
+                var key = getUrlParam("search")[0];
+                // data的一个示例为：
+                // {
+                //     "base-url": "",
+                //         "list": [
+                //             {
+                //                 "title": "test",
+                //                 "type": "image",
+                //                 "content": "MjjnuqcxMOePrTIwMTjlubTmnIgxMeaXpeWNh+aXl+S7quW8j+iusOW9leOAgg==",
+                //                 "url": "20181211",
+                //                 "date": "2017-01-01 00:00:00"
+                //             }
+                //         ]
+                // }
+                // 其中，key为文件名，value为文件信息
+                // 文件信息中，type为文件类型，
+                // content为base64加密后的文件描述，
+                // url为文件链接
+
+
+                // 搜索
+                // 如果没有关键字，那么直接显示全部
+                data = data.list;
+                if (!key) {
+                    console.log("没有关键字");
+                    for (var result of data) {
+                        results.push(result);
+                    }
+                } else {
+                    // 如果有关键字，那么根据关键字搜索
+                    for (var result of data) {
+                        // 如果文件描述中包含关键字，那么添加到结果中
+                        if (result.title.includes(key)) {
+                            results.push(result);
+                        }
+                    }
+                }
+
+                // 过滤
+                // 如果url参数存在type，那么根据url参数过滤
+                var type = getUrlParam("type");
+                if (type.length) {
+                    results = results.filter(result => {
+                        return type.includes(result.type);
+                    });
+                }
+
+                // 渲染
+                if (results.length) {
+                    $("#results").empty();
+                    // 填充结果
+                    results.forEach(result => {
+                        // $("#results").append(`<p>${b64DecodeUnicode(result.content)}</p>`);
+                        $("#results").append(`
+                            <a href="details.html?url=${result.url}" class="mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        ${result.title}
+                                    </div>
+                                    <div class="card-body">
+                                        ${b64DecodeUnicode(result.content)}
+                                    </div>
+                                </div>
+                            </a>
+                        `);
+                    });
+                }
+                else {
+                    $("#results").append('<div class="alert alert-danger"><h6><b>没有符合的结果。请检查拼写或减少关键字长度后再次尝试。</b></h6></div>');
+                }
+            });
+
+        }
+    </script>
+    <script src="js/common.js"></script>
+</body>
+
+</html>

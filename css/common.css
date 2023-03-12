@@ -1,0 +1,33 @@
+html,
+body {
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+main {
+    /* background-image: url(./images/login-bg.jpg); */
+    background-size: 100% 100%;
+    background-repeat: no-repeat, repeat;
+}
+
+.card-header {
+    background-color: var(--bs-gray-700);
+    color: #fff;
+}
+
+.row a {
+    text-decoration: none;
+    color: black;
+}
+
+.row a:hover {
+    text-decoration: none;
+    color: var(--bs-gray-800);
+}
+
+.row a:active {
+    text-decoration: none;
+    color: var(--bs-gray-700);
+}

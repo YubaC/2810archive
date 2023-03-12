@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>档案室 | 二十八级十班安全局档案馆</title>
+
+    <!-- <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/style.css"> -->
+    <link rel="stylesheet" href="lib/fontawesome-free-5.15.4-web/css/all.min.css">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/common.css">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/jquery/js/jquery-3.6.3.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <div id="header"></div>
+
+        <nav class="breadcrumb ms-4 mt-4">
+            <a class="breadcrumb-item" href="index.html">档案馆</a>
+            <span class="breadcrumb-item active">档案室</span>
+        </nav>
+    </header>
+
+    <main class="pt-3 pb-3">
+        <div class="card container-fluid pt-3 mt-3 col-sm-10">
+            <div class="card-header">查找档案</div>
+            <div class="card-body">
+                <form action="list.html" method="get">
+                    <div class="d-flex flex-row-reverse mb-3 mt-3">
+                        <div>
+                            <button type="submit" class="btn btn-primary">搜索</button>
+                        </div>
+                        <div class="flex-grow-1 me-4">
+                            <label for="search" class="form-label visually-hidden">输入关键字：</label>
+                            <input type="text" class="form-control" id="search" name="search" placeholder="留空以查看全部">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card container-fluid pt-3 mt-3 col-sm-10">
+            <div class="card-header">分类归档</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a href="list.html?search=&type=image">
+                            <div class="card m-4">
+                                <div class="card-body text-center">
+                                    <i class="far fa-file-image display-1" aria-hidden="true"></i>
+                                    <br>图片
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="list.html?search=&type=video">
+                            <div class="card m-4">
+                                <div class="card-body text-center">
+                                    <i class="far fa-file-video display-1" aria-hidden="true"></i>
+                                    <br>视频
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="list.html?search=&type=document">
+                            <div class="card m-4">
+                                <div class="card-body text-center">
+                                    <i class="far fa-file-alt display-1" aria-hidden="true"></i>
+                                    <br>文档
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="list.html?search=&type=other">
+                            <div class="card m-4">
+                                <div class="card-body text-center">
+                                    <i class="far fa-file-archive display-1" aria-hidden="true"></i>
+                                    <br>其它
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card container-fluid pt-3 mt-3 mb-4 col-sm-10">
+            <div class="card-header">查看全部</div>
+            <div class="card-body">
+                <a href="list.html">
+                    <button class="btn btn-primary">查看全部存档存储在此的档案</button>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer id="footer" class="bg-dark"></footer>
+
+    <style>
+
+    </style>
+    <script>
+        function loadData() {
+            // 使用刚刚的token，从github的仓库中获取数据
+
+            // alert("hello,world!");
+            // // 1. 获取url中的id
+            // var id = getUrlParam("id");
+            // // 2. 发送ajax请求
+            // $.ajax({
+            //     url: "http://localhost:8080/api/v1/index/article",
+            //     type: "get",
+            //     data: {
+            //         id: id
+            //     },
+            //     success: function (res) {
+            //         if (res.code == 200) {
+            //             // 3. 渲染数据
+            //             var data = res.data;
+            //             $("#title").html(data.title);
+            //             $("#author").html(data.author);
+            //             $("#publishDate").html(data.publishDate);
+            //             $("#content").html(data.content);
+            //         } else {
+            //             alert(res.msg);
+            //         }
+            //     }
+            // });
+        }
+
+    </script>
+    <script src="js/common.js"></script>
+</body>
+
+</html>

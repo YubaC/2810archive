@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>详情 | 二十八级十班安全局档案馆</title>
+
+    <!-- <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/style.css"> -->
+    <link rel="stylesheet" href="lib/fontawesome-free-5.15.4-web/css/all.min.css">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/common.css">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/jquery/js/jquery-3.6.3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        #details {
+            font-size: 1.2rem;
+        }
+
+        #details table {
+            width: 90%;
+            /* table-layout: fixed; */
+            text-align: center;
+            margin: auto;
+        }
+
+        #details table,
+        #details th,
+        #details td {
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+
+        #details img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div id="header"></div>
+
+        <nav class="breadcrumb ms-4 mt-4">
+            <a class="breadcrumb-item" href="index.html">档案馆</a>
+            <a class="breadcrumb-item" href="archives.html">档案室</a>
+            <a class="breadcrumb-item" href="list.html">档案列表</a>
+            <span class="breadcrumb-item active" id="now-at"></span>
+        </nav>
+    </header>
+
+    <main class="pt-3 pb-3">
+        <div class="card container-fluid pt-3 mt-3 col-sm-10">
+            <div class="card-header" id="title"></div>
+            <div class="card-body ms-3 me-3" id="details">
+            </div>
+        </div>
+    </main>
+    <footer id="footer" class="bg-dark"></footer>
+
+    <script src="./js/functions.js"></script>
+    <!-- <script type="module" src="./js/download.js"></script> -->
+    <script>
+        const url = getUrlParam("url")[0] || "";
+
+        // marked
+        // marked.setOptions({
+        //     renderer: new marked.Renderer(),
+        //     gfm: true,
+        //     tables: true,
+        //     breaks: false,
+        //     pedantic: false,
+        //     sanitize: false,
+        //     smartLists: true,
+        //     smartypants: false,
+        //     highlight: function (code) {
+        //         return hljs.highlightAuto(code).value;
+        //     }
+        // });
+
+        // 加载档案列表
+        function loadData() {
+            fetch(db.fetch_url + db.base + url + "/" + "20181211升旗.rar", {
+                method: "GET",
+                headers: {
+                    Authorization: "token " + token,
+                    Accept: "application/vnd.github.v3+json"
+                }
+            }).then((res) => {
+                return res.json();
+            }).then((data) => {
+                return data.download_url;
+            }).then((data) => {
+                // 执行下载文件
+                // window.location.href = data;
+            })
+            fetch(db.fetch_url + db.base + url + "/" + url + ".md", {
+                method: "GET",
+                headers: {
+                    Authorization: "token " + token,
+                    Accept: "application/vnd.github.v3+json"
+                }
+            }).then((res) => {
+                return res.json();
+            }).then((data) => {
+                return b64DecodeUnicode(data.content);
+            }).then((data) => {
+                // 提取markdown的meta data，并从data中删除meta data
+                const meta = data.match(/---[\s\S]*?---/)[0];
+                data = data.replace(meta, "");
+                // console.log(meta);
+
+                // ---
+                // title: xxx
+                // type: image
+                // introduce: xxx
+                // date: yyyy-mm-dd hh:mm:ss
+                // ---
+
+                const date = meta.match(/date: (.*)/)[1];
+                const title = meta.match(/title: (.*)/)[1];
+                const introduce = meta.match(/introduce: (.*)/)[1];
+                // console.log(date, title, introduce);
+
+                // 将title插入到now-at中
+                $("#now-at").html(title);
+                $("#title").html(title);
+                document.title = title + " | 二十八级十班安全局档案馆";
+
+                // 将markdown转换为html
+                // console.log(data);
+                // 将markdown转换为html
+                const html = marked.parse(data);
+                // const html = marked.parse('# Marked in browser\n\nRendered by **marked**.');
+                // console.log(html);
+                // 将html插入到results中
+                $("#details").html(html);
+                // 将$("#details")中的图片的src属性值替换为base+url+图片名
+                // $("#details img").each(function () {
+                //     // 如果使用的是相对路径
+                //     if ($(this).attr("src").indexOf("http") == -1) {
+                //         $(this).attr("src", db.base + url + "/" + $(this).attr("src"));
+                //     }
+                // });
+
+            }).then(() => {
+                // 将a内的href换成data-href
+                $("#details a").each(function () {
+                    $(this).attr("data-href", $(this).attr("href"));
+                    $(this).attr("href", "javascript:void(0)");
+                });
+
+                $("#details img").each(function () {
+                    var src = $(this).attr("src");
+                    // 如果src以./开头，那么去掉./
+                    if (src.indexOf("./") == 0) {
+                        $(this).attr("src", src.substring(2));
+                    }
+                });
+                // 加载./js/download.js
+                script = document.createElement("script");
+                script.type = "module";
+                script.src = "./js/download.js";
+                document.head.appendChild(script);
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
+
+    </script>
+    <script src="js/common.js"></script>
+</body>
+
+</html>
