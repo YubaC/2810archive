@@ -12,16 +12,19 @@ $("#details a").on("click", function () {
     event.preventDefault();
     console.log(db.base + url + "/" + $(this).attr("data-href"));
     octokit
-        .request("GET /repos/{owner}/{repo}/contents/{path}", {
-            owner: db.owner,
-            repo: db.repo,
-            path:
-                db.base +
-                url +
-                "/" +
-                decodeURIComponent($(this).attr("data-href")),
-            // path: "data/20181211/20181211升旗.rar",
-        })
+        .request(
+            `GET /repos/{owner}/{repo}/contents/{path}?t=${new Date().getTime()}`,
+            {
+                owner: db.owner,
+                repo: db.repo,
+                path:
+                    db.base +
+                    url +
+                    "/" +
+                    decodeURIComponent($(this).attr("data-href")),
+                // path: "data/20181211/20181211升旗.rar",
+            }
+        )
         .then(function (res) {
             console.log(res);
             console.log(res.data.download_url);
@@ -47,12 +50,15 @@ $("#details img")
 
         var src = $(this).attr("src");
         octokit
-            .request("GET /repos/{owner}/{repo}/contents/{path}", {
-                owner: db.owner,
-                repo: db.repo,
-                path: db.base + url + "/" + decodeURIComponent(src),
-                // path: "data/20181211/20181211升旗.rar",
-            })
+            .request(
+                `GET /repos/{owner}/{repo}/contents/{path}?t=${new Date().getTime()}`,
+                {
+                    owner: db.owner,
+                    repo: db.repo,
+                    path: db.base + url + "/" + decodeURIComponent(src),
+                    // path: "data/20181211/20181211升旗.rar",
+                }
+            )
             .then(function (res) {
                 console.log(res.data.download_url);
                 // 从download_url中获取图片的名称，并去掉最后的?
