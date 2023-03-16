@@ -136,8 +136,10 @@
             }).then(() => {
                 // 将a内的href换成data-href
                 $("#details a").each(function () {
-                    $(this).attr("data-href", $(this).attr("href"));
-                    $(this).attr("href", "javascript:void(0)");
+                    if ($(this).attr("href").indexOf("http") == -1) {
+                        $(this).attr("data-href", $(this).attr("href"));
+                        $(this).attr("href", "javascript:void(0)");
+                    }
                 });
 
                 $("#details img").each(function () {
