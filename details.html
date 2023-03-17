@@ -160,9 +160,15 @@
 
             // 如果图片以./开头，则去除开头的./
             detailsEl.find("img[src^='./']").each(function () {
-                $(this).attr("data-src", $(this).attr("src").slice(2));
-                $(this).attr("src", "./images/loading.jpg");
-                // $(this).attr("src", "https://gcore.jsdelivr.net/gh/YubaC/2810archive@latest/images/loading.jpg");
+                $(this).attr("src", $(this).attr("src").slice(2));
+            });
+
+            // 更换图片的 src 属性为 data-src 属性，并替换加载中的图片
+            detailsEl.find("img").each(function () {
+                console.log($(this).attr("src"));
+                $(this).attr("data-src", $(this).attr("src"));
+                // $(this).attr("src", "./images/loading.jpg");
+                $(this).attr("src", "https://gcore.jsdelivr.net/gh/YubaC/2810archive/images/loading.jpg");
             });
 
             // 如果音频以./开头，则去除开头的./
