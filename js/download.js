@@ -41,37 +41,94 @@ $("#details a:not([href^='http']").on("click", async function (event) {
 });
 
 // 遍历所有图片
-$("#details img, #details audio").each(async function (img) {
+$("#details img").each(async function () {
     const src = $(this).attr("data-src") || $(this).attr("src");
     if (src.indexOf("http") !== -1) {
         return;
     }
     try {
         const { download_url } = await getFileContent(decodeURIComponent(src));
-        // 从 download_url 中获取图片的名称，并去掉最后的 ?
         const name = download_url.substring(
             download_url.lastIndexOf("/") + 1,
             download_url.lastIndexOf("?")
         );
-        // 更换 src 为下载链接
-        $(this).attr("src", download_url);
-        // 下载图片
-        // const blob = await fetch(download_url).then((res) => res.blob());
-        // const objectUrl = URL.createObjectURL(blob);
-        // const a = document.createElement("a");
-        // a.href = objectUrl;
-        // a.download = name;
-        // a.click();
-        // a.remove();
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", download_url, true);
+        xhr.responseType = "blob";
+        const img = this;
+        // 添加边框
+        $(img).css("border", "2px solid #ccc");
+        xhr.addEventListener("load", async () => {
+            if (xhr.status === 200) {
+                const blob = xhr.response;
+                const objectUrl = URL.createObjectURL(blob);
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onload = function () {
+                    const base64data = reader.result;
+                    $(img).attr("src", base64data);
+                    // 加载完成后移除边框和进度条
+                    $(img).css("border", "none");
+                    progressBar.parent().remove();
+                };
+            } else {
+                console.error(`Failed to fetch image: ${src}`);
+                $(img).after(
+                    `<div class="alert alert-danger">${
+                        $(img).attr("alt") || $(img).attr("data-src")
+                    }<br><h6><b>图片加载失败。请尝试刷新页面并清除浏览器缓存。</b></h6></div>`
+                );
+                // 加载失败时移除边框和进度条
+                $(img).css("border", "none");
+                progressBar.parent().remove();
+                $(img).remove();
+            }
+        });
+        xhr.addEventListener("progress", (e) => {
+            if (e.lengthComputable) {
+                const percentage = (e.loaded / e.total) * 100;
+                updateProgressBar(percentage);
+            }
+        });
+        xhr.send();
+        const progressBar = $(`<div class="progress">
+                              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
+                          </div>`)
+            .insertBefore(this)
+            .find(".progress-bar");
+        const updateProgressBar = (percentage) => {
+            progressBar.css("width", `${percentage}%`);
+        };
     } catch (err) {
         console.error(err);
-        // 在加载失败的图片处插入一段文字
-        // 添加一个段落，显示图片替代文本
-        // 删除加载中的图片
         $(this).after(
-            `<div class="alert alert-danger">${$(this).attr(
-                "alt"
-            )}<br><h6><b>图片加载失败。请尝试刷新页面并清除浏览器缓存。</b></h6></div>`
+            `<div class="alert alert-danger">${
+                $(this).attr("alt") || $(this).attr("data-src")
+            }<br><h6><b>图片加载失败。请尝试刷新页面并清除浏览器缓存。</b></h6></div>`
+        );
+        $(this).remove();
+        // 删除进度条
+        progressBar.parent().remove();
+    }
+});
+
+// 处理音频
+$("#details audio").each(async function () {
+    const src = $(this).attr("src");
+    if (src.indexOf("http") !== -1) {
+        return true;
+    }
+    try {
+        const { download_url } = await getFileContent(decodeURIComponent(src));
+
+        $(this).attr("data-src", $(this).attr("src"));
+        $(this).attr("src", download_url);
+    } catch (err) {
+        console.error(err);
+        $(this).after(
+            `<div class="alert alert-danger">${
+                $(this).attr("alt") || $(this).attr("data-src")
+            }<br><h6><b>音频加载失败。请尝试刷新页面并清除浏览器缓存。</b></h6></div>`
         );
         $(this).remove();
     }
