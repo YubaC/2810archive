@@ -159,6 +159,11 @@
                 $(this).attr("src", "./images/loading.jpg");
             });
 
+            // 如果音频以./开头，则去除开头的./
+            detailsEl.find("audio[src^='./']").each(function () {
+                $(this).attr("src", $(this).attr("src").slice(2));
+            });
+
             // 动态加载 download.js 脚本
             const script = document.createElement("script");
             script.type = "module";

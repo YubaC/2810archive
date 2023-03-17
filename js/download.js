@@ -41,8 +41,8 @@ $("#details a:not([href^='http']").on("click", async function (event) {
 });
 
 // 遍历所有图片
-$("#details img").each(async function (img) {
-    const src = $(this).attr("data-src");
+$("#details img, #details audio").each(async function (img) {
+    const src = $(this).attr("data-src") || $(this).attr("src");
     if (src.indexOf("http") !== -1) {
         return;
     }
