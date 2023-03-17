@@ -130,10 +130,9 @@
                 $(this).attr("href", "javascript:void(0)");
             });
 
-            // 将所有本地图片的相对路径替换为绝对路径
+            // 如果图片以./开头，则去除开头的./
             detailsEl.find("img[src^='./']").each(function () {
-                const src = new URL($(this).attr("src"), location.href);
-                $(this).attr("src", src.pathname.substring(1));
+                $(this).attr("src", $(this).attr("src").slice(2));
             });
 
             // 动态加载 download.js 脚本
