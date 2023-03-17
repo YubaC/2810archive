@@ -113,10 +113,33 @@
             const date = meta.match(/date: (.*)/)[1];
             const title = meta.match(/title: (.*)/)[1];
             const introduce = meta.match(/introduce: (.*)/)[1];
+            const type = meta.match(/type: (.*)/)[1];
+
+            var icon;
+            switch (type) {
+                case "image":
+                    icon = "far fa-file-image";
+                    break;
+                case "video":
+                    icon = "far fa-file-video";
+                    break;
+                case "document":
+                    icon = "far fa-file-alt";
+                    break;
+                case "other":
+                    icon = "far fa-file-archive";
+                    break;
+                default:
+                    icon = "far fa-file";
+                    break;
+            }
+
+            const typeAndTitle = `<i class="${icon}" aria-hidden="true"></i>  ${title}`;
 
             // 更新页面元素的内容
-            $("#now-at").html(title);
-            $("#title").html(title);
+            $("#now-at").html(typeAndTitle);
+            $("#title").html(typeAndTitle);
+
             document.title = `${title} | 二十八级十班安全局档案馆`;
 
             // 将正文内容转换成 HTML 格式，并将其插入到页面元素中

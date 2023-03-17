@@ -37,13 +37,13 @@
             <div class="card-header">筛选档案</div>
             <div class="card-body">
                 <form action="list.html" method="get">
-                    <div class="d-flex flex-row-reverse mb-3 mt-1">
-                        <div>
-                            <button type="submit" class="btn btn-primary">搜索</button>
-                        </div>
-                        <div class="flex-grow-1 me-4">
+                    <div class="d-flex flex-row mb-3 mt-1">
+                        <div class="flex-grow-1">
                             <label for="search" class="form-label visually-hidden">输入关键字：</label>
                             <input type="text" class="form-control" id="search" name="search" placeholder="留空以查看全部">
+                        </div>
+                        <div class="ms-4">
+                            <button type="submit" class="btn btn-primary">搜索</button>
                         </div>
                     </div>
 
@@ -188,12 +188,31 @@
                     $("#results").empty();
                     // 填充结果
                     results.forEach(result => {
+                        // 根据不同类型填充不同fontawesome图标
+                        var icon;
+                        switch (result.type) {
+                            case "image":
+                                icon = "far fa-file-image";
+                                break;
+                            case "video":
+                                icon = "far fa-file-video";
+                                break;
+                            case "document":
+                                icon = "far fa-file-alt";
+                                break;
+                            case "other":
+                                icon = "far fa-file-archive";
+                                break;
+                            default:
+                                icon = "far fa-file";
+                                break;
+                        }
                         // $("#results").append(`<p>${b64DecodeUnicode(result.content)}</p>`);
                         $("#results").append(`
                             <a href="details.html?url=${result.url}" class="mb-3">
                                 <div class="card">
                                     <div class="card-header">
-                                        ${result.title}
+                                        <i class="${icon}" aria-hidden="true"></i>  ${result.title}
                                     </div>
                                     <div class="card-body">
                                         ${b64DecodeUnicode(result.content)}
