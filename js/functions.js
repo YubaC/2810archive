@@ -36,6 +36,7 @@ function getUrlParam(para) {
 
 // base64加密的函数
 function b64EncodeUnicode(str) {
+    if (str == null) return null;
     return btoa(
         encodeURIComponent(str).replace(
             /%([0-9A-F]{2})/g,
@@ -48,6 +49,7 @@ function b64EncodeUnicode(str) {
 
 // base64解密的函数
 function b64DecodeUnicode(str) {
+    if (str == null) return null;
     return decodeURIComponent(
         atob(str)
             .split("")

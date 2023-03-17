@@ -14,7 +14,9 @@ if (token == null) {
     token = getCookie("token");
     if (token == null || token == "") {
         // 3. 如果没有，跳转到登录页面
-        window.location.href = "login.html";
+        window.location.href = `login.html?redirct=${b64EncodeUnicode(
+            window.location.href
+        )}`;
     } else {
         // 刷新cookie的过期时间
         setCookie("token", token, 7);

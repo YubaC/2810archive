@@ -15,6 +15,7 @@
     <script src="lib/jquery/js/jquery-3.6.3.min.js"></script>
     <!-- 引用CryptoJS -->
     <script src="lib/crypto-js-4.1.1/crypto-js.js"></script>
+    <script src="js/functions.js"></script>
 
     <style>
         html,
@@ -129,8 +130,9 @@
                         if ($("input[name='remember']").is(":checked")) {
                             setCookie("token", decrypted, 7);
                         }
-
-                        window.location.href = "index.html";
+                        // 查找url内是否有redirect参数，如果有，跳转到redirect参数指定的页面
+                        const url = b64DecodeUnicode(getUrlParam("redirct")[0]) || "index.html";
+                        window.location.href = url;
                     } else {
                         alert("密码错误！");
                     }
