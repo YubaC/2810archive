@@ -42,7 +42,7 @@ $("#details a:not([href^='http']").on("click", async function (event) {
 
 // 遍历所有图片
 $("#details img").each(async function (img) {
-    const src = $(this).attr("src");
+    const src = $(this).attr("data-src");
     if (src.indexOf("http") !== -1) {
         return;
     }
@@ -66,8 +66,13 @@ $("#details img").each(async function (img) {
     } catch (err) {
         console.error(err);
         // 在加载失败的图片处插入一段文字
+        // 添加一个段落，显示图片替代文本
+        // 删除加载中的图片
         $(this).after(
-            '<div class="alert alert-danger"><h6><b>图片加载失败。请尝试刷新页面并清除浏览器缓存。此时下载非网盘链接亦会失败。</b></h6></div>'
+            `<div class="alert alert-danger">${$(this).attr(
+                "alt"
+            )}<br><h6><b>图片加载失败。请尝试刷新页面并清除浏览器缓存。</b></h6></div>`
         );
+        $(this).remove();
     }
 });

@@ -132,7 +132,8 @@
 
             // 如果图片以./开头，则去除开头的./
             detailsEl.find("img[src^='./']").each(function () {
-                $(this).attr("src", $(this).attr("src").slice(2));
+                $(this).attr("data-src", $(this).attr("src").slice(2));
+                $(this).attr("src", "./images/loading.jpg");
             });
 
             // 动态加载 download.js 脚本
