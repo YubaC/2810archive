@@ -42,6 +42,12 @@
         #details audio {
             max-width: 100%;
         }
+
+        /* 取消进度条下边的圆角，但保留上边的，以和图片贴合 */
+        .progress {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
     </style>
 </head>
 
@@ -169,6 +175,7 @@
                 $(this).attr("data-src", $(this).attr("src"));
                 // $(this).attr("src", "./images/loading.jpg");
                 $(this).attr("src", "https://gcore.jsdelivr.net/gh/YubaC/2810archive/images/loading.jpg");
+                $(this).css("border", "2px solid #ccc");
             });
 
             // 如果音频以./开头，则去除开头的./

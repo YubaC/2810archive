@@ -18,9 +18,18 @@ async function getFileContent(path) {
 }
 
 // 点击链接下载文件
-$("#details a:not([href^='http']").on("click", async function (event) {
+$(
+    '#details a:not([href^="http"]):not([href^="mailto"]):not([href^="tel"]):not([href^="sms"])'
+).on("click", async function (event) {
     event.stopPropagation(); // 终止事件冒泡
     event.preventDefault();
+    // 添加加载动画
+    // <i class="fas fa-circle-notch fa-spin"></i>
+    $(this).html(
+        `<i class="fas fa-circle-notch fa-spin" style="margin-right: 5px;"></i>${$(
+            this
+        ).text()}`
+    );
     const href = $(this).attr("href");
     if (href.indexOf("http") !== -1) {
         return true;
@@ -29,14 +38,39 @@ $("#details a:not([href^='http']").on("click", async function (event) {
         const { download_url } = await getFileContent(
             decodeURIComponent($(this).attr("data-href"))
         );
+
         // 下载文件
         var a = document.createElement("a");
         a.href = download_url;
+        // 添加download属性
         a.download = download_url;
         a.click();
         a.remove();
+
+        // 移除加载动画，显示一个对号
+        $(this).html(
+            `<i class="fas fa-check" style="margin-right: 5px; color: green;"></i>${$(
+                this
+            ).text()}`
+        );
+
+        // 三秒后移除对号
+        setTimeout(() => {
+            $(this).html($(this).text());
+        }, 3000);
     } catch (err) {
         console.error(err);
+        window.alert("下载失败，请刷新页面重试。");
+        // 移除加载动画，显示一个叉号
+        $(this).html(
+            `<i class="fas fa-times" style="margin-right: 5px; color: red;"></i>${$(
+                this
+            ).text()}`
+        );
+        // 三秒后移除叉号
+        setTimeout(() => {
+            $(this).html($(this).text());
+        }, 3000);
     }
 });
 
@@ -57,7 +91,7 @@ $("#details img").each(async function () {
         xhr.responseType = "blob";
         const img = this;
         // 添加边框
-        $(img).css("border", "2px solid #ccc");
+        // $(img).css("border", "2px solid #ccc");
         xhr.addEventListener("load", async () => {
             if (xhr.status === 200) {
                 const blob = xhr.response;
@@ -118,13 +152,27 @@ $("#details audio").each(async function () {
     if (src.indexOf("http") !== -1) {
         return true;
     }
+
     try {
+        // 添加加载动画
+        // <i class="fas fa-circle-notch fa-spin"></i>
+        $(this).before(
+            `<i class="fas fa-circle-notch fa-spin" style="margin-right: 5px;"></i>`
+        );
+
+        // 获取音频文件
         const { download_url } = await getFileContent(decodeURIComponent(src));
 
         $(this).attr("data-src", $(this).attr("src"));
         $(this).attr("src", download_url);
+
+        // 移除加载动画
+        $(this).prev().remove();
     } catch (err) {
         console.error(err);
+        // 移除加载动画
+        $(this).prev().remove();
+
         $(this).after(
             `<div class="alert alert-danger">${
                 $(this).attr("alt") || $(this).attr("data-src")
