@@ -85,6 +85,11 @@ $("#details img").each(async function () {
     if (src.indexOf("http") !== -1) {
         return;
     }
+
+    const img = this;
+    const { progressBar, updateProgressBar } = addProgressBar(img);
+    progressBar.addClass("active-bar");
+
     try {
         const { download_url } = await getFileContent(decodeURIComponent(src));
         const name = download_url.substring(
@@ -100,26 +105,31 @@ $("#details img").each(async function () {
         const xhr = new XMLHttpRequest();
         xhr.open("GET", download_url, true);
         xhr.responseType = "blob";
-        const img = this;
-        // 添加边框
+
+        progressBar.removeClass("active-bar");
+
+        // // 添加边框
         // $(img).css("border", "2px solid #ccc");
         xhr.addEventListener("load", async () => {
             if (xhr.status === 200) {
                 const blob = xhr.response;
                 const objectUrl = URL.createObjectURL(blob);
                 $(img).attr("src", objectUrl); // 将URL对象直接设置为图片的src属性
-                // 加载完成后移除边框和进度条
-                $(img).css("border", "none");
+                // 加载完成后移除进度条
+                // // 加载完成后移除边框和进度条
+                // $(img).css("border", "none");
                 progressBar.parent().remove();
             } else {
-                console.error(`Failed to fetch image: ${src}`);
-                $(img).after(
-                    `<div class="alert alert-danger">${
-                        $(img).attr("alt") || $(img).attr("data-src")
-                    }<br><h6><b>图片加载失败。请尝试刷新页面并清除浏览器缓存。</b></h6></div>`
+                const errorMsg = `Failed to fetch image: ${src}`;
+                console.error(errorMsg);
+                showErrorMsg(
+                    img,
+                    $(img).attr("alt") || $(img).attr("data-src"),
+                    "图片加载失败。请尝试刷新页面并清除浏览器缓存。"
                 );
-                // 加载失败时移除边框和进度条
-                $(img).css("border", "none");
+                // 加载失败时移除进度条
+                // // 加载失败时移除边框和进度条
+                // $(img).css("border", "none");
                 progressBar.parent().remove();
                 $(img).remove();
             }
@@ -130,159 +140,54 @@ $("#details img").each(async function () {
                 updateProgressBar(percentage);
             }
         });
+        // 错误处理
+        xhr.addEventListener("error", (e) => {
+            const errorMsg = "Failed to fetch image.";
+            console.error(errorMsg);
+            showErrorMsg(
+                img,
+                $(img).attr("alt") || $(img).attr("data-src"),
+                "图片加载失败。请尝试刷新页面并清除浏览器缓存。"
+            );
+            $(img).remove();
+            // 删除进度条
+            progressBar.parent().remove();
+            throw new Error(errorMsg);
+        });
+
         xhr.send();
-        const progressBar = $(`<div class="progress">
-                              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
-                          </div>`)
-            .insertBefore(this)
-            .find(".progress-bar");
-        const updateProgressBar = (percentage) => {
-            progressBar.css("width", `${percentage}%`);
-        };
     } catch (err) {
         console.error(err);
-        $(this).after(
-            `<div class="alert alert-danger">${
-                $(this).attr("alt") || $(this).attr("data-src")
-            }<br><h6><b>图片加载失败。请尝试刷新页面并清除浏览器缓存。</b></h6></div>`
+        progressBar.removeClass("active-bar");
+
+        showErrorMsg(
+            img,
+            $(img).attr("alt") || $(img).attr("data-src"),
+            "无网络连接或图片已失效。请检查网络连接并向我们反馈这个错误。"
         );
-        $(this).remove();
+        $(img).remove();
         // 删除进度条
         progressBar.parent().remove();
     }
 });
 
-// // 处理音频
-// $("#details audio").each(async function () {
-//     const src = $(this).attr("src");
-//     if (src.indexOf("http") !== -1) {
-//         return true;
-//     }
+function showErrorMsg(element, msg1, msg2) {
+    $(element).after(
+        `<div class="alert alert-danger">${msg1}<br><h6><b>${msg2}</b></h6></div>`
+    );
+}
 
-//     try {
-//         // 添加加载动画
-//         // <i class="fas fa-circle-notch fa-spin"></i>
-//         $(this).before(
-//             `<i class="fas fa-circle-notch fa-spin" style="margin-right: 5px;"></i>`
-//         );
-
-//         // 获取音频文件
-//         const { download_url } = await getFileContent(decodeURIComponent(src));
-
-//         $(this).attr("data-src", $(this).attr("src"));
-//         $(this).attr("src", download_url);
-
-//         // 移除加载动画
-//         $(this).prev().remove();
-//     } catch (err) {
-//         console.error(err);
-//         // 移除加载动画
-//         $(this).prev().remove();
-
-//         $(this).after(
-//             `<div class="alert alert-danger">${
-//                 $(this).attr("alt") || $(this).attr("data-src")
-//             }<br><h6><b>音频加载失败。请尝试刷新页面并清除浏览器缓存。</b></h6></div>`
-//         );
-//         $(this).remove();
-//     }
-// });
-// // 处理音频
-// $("#details audio").each(async function () {
-//     const src = $(this).attr("src");
-//     if (src.indexOf("http") !== -1) {
-//         return true;
-//     }
-
-//     try {
-//         // 添加加载动画
-//         const $loadingIcon = $(
-//             "<i class='fas fa-circle-notch fa-spin' style='margin-right: 5px;'></i>"
-//         );
-//         $(this).before($loadingIcon);
-
-//         // 获取音频文件
-//         const { download_url } = await getFileContent(decodeURIComponent(src));
-
-//         $(this).attr("data-src", $(this).attr("src"));
-//         $(this).attr("src", download_url);
-
-//         // 监听 canplay 事件，移除加载动画
-//         $(this).on("canplay", function () {
-//             $(this).prev().remove();
-//         });
-//     } catch (err) {
-//         console.error(err);
-//         // 移除加载动画
-//         $(this).prev().remove();
-
-//         // 添加加载失败提示
-//         $(this).after(
-//             `<div class="alert alert-danger">${
-//                 $(this).attr("alt") || $(this).attr("data-src")
-//             }<br><h6><b>音频加载失败。请尝试刷新页面并清除浏览器缓存。</b></h6></div>`
-//         );
-//         $(this).remove();
-//     }
-// });
-
-// // 处理音频
-// $("#details audio").each(async function () {
-//     const src = $(this).attr("src");
-//     if (src.indexOf("http") !== -1) {
-//         return true;
-//     }
-
-//     // 添加加载动画和音频组件
-//     const $audioWrapper = $("<div class='d-flex align-items-center'></div>");
-//     const $loadingIcon = $("<i class='fas fa-circle-notch fa-spin me-2'></i>");
-//     try {
-//         $audioWrapper.append($loadingIcon, $(this).clone());
-
-//         $(this).replaceWith($audioWrapper);
-
-//         // 获取音频文件
-//         const { download_url } = await getFileContent(decodeURIComponent(src));
-
-//         // 如果download_url不存在就直接跳到catch
-//         if (!download_url) {
-//             throw new Error("Invalid audio url.");
-//         }
-
-//         // 更新音频组件的 src 属性
-//         $audioWrapper.find("audio").attr("src", download_url);
-
-//         // 监听 canplay 事件，移除加载动画
-//         $audioWrapper.find("audio").on("canplay", function () {
-//             $audioWrapper.find(".fa-circle-notch").remove();
-
-//             // 添加对号图标
-//             $audioWrapper.prepend(
-//                 "<i class='fas fa-check me-2 text-success'></i>"
-//             );
-
-//             // 三秒后移除对号图标
-//             setTimeout(() => {
-//                 $audioWrapper.find(".fa-check").remove();
-//             }, 3000);
-//         });
-//     } catch (err) {
-//         console.error(err);
-//         // 移除加载动画
-//         $audioWrapper.find(".fa-circle-notch").remove();
-
-//         // 添加叉号图标
-//         $audioWrapper.prepend("<i class='fas fa-times me-2 text-danger'></i>");
-
-//         // 添加加载失败提示
-//         $audioWrapper.after(
-//             `<div class="alert alert-danger">${
-//                 $audioWrapper.find("audio").attr("alt") ||
-//                 $audioWrapper.find("audio").attr("data-src")
-//             }<br><h6><b>音频加载失败。请尝试刷新页面并清除浏览器缓存。</b></h6></div>`
-//         );
-//     }
-// });
+function addProgressBar(element) {
+    const progressBar = $(`<div class="progress">
+                              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
+                          </div>`)
+        .insertBefore(element)
+        .find(".progress-bar");
+    const updateProgressBar = (percentage) => {
+        progressBar.css("width", `${percentage}%`);
+    };
+    return { progressBar, updateProgressBar };
+}
 
 // 处理音频
 $("#details audio").each(async function () {
@@ -298,9 +203,11 @@ $("#details audio").each(async function () {
 
     $(this).replaceWith($audioWrapper);
 
+    let download_url;
     try {
         // 获取音频文件
-        const { download_url } = await getFileContent(decodeURIComponent(src));
+        const response = await getFileContent(decodeURIComponent(src));
+        download_url = response.download_url;
 
         // 如果download_url不存在就直接跳到catch
         if (!download_url) {
@@ -308,7 +215,30 @@ $("#details audio").each(async function () {
         }
 
         // 更新音频组件的 src 属性
-        $audioWrapper.find("audio").attr("src", download_url);
+        $audioWrapper
+            .find("audio")
+            .attr("src", download_url)
+
+            // 错误处理
+            .on("error", (e) => {
+                // 报错
+                $audioWrapper.find(".fa-circle-notch").remove();
+
+                // 添加差号图标
+                $audioWrapper.prepend(
+                    "<i class='fas fa-times me-2 text-danger'></i>"
+                );
+
+                // 添加加载失败提示
+                showErrorMsg(
+                    $audioWrapper,
+                    $audioWrapper.find("audio").attr("alt") ||
+                        $audioWrapper.find("audio").attr("data-src"),
+                    "音频加载失败。请尝试刷新页面并清除浏览器缓存。"
+                );
+
+                throw new Error("Failed to fetch audio.");
+            });
 
         // 监听 canplay 事件，移除加载动画
         $audioWrapper.find("audio").on("canplay", function () {
@@ -325,6 +255,7 @@ $("#details audio").each(async function () {
             }, 3000);
         });
     } catch (err) {
+        // 下载链接为空时，添加差号图标和加载失败提示
         console.error(err);
         // 移除加载动画
         $audioWrapper.find(".fa-circle-notch").remove();
@@ -333,14 +264,11 @@ $("#details audio").each(async function () {
         $audioWrapper.prepend("<i class='fas fa-times me-2 text-danger'></i>");
 
         // 添加加载失败提示
-        $audioWrapper.after(
-            `<div class="alert alert-danger">${
-                $audioWrapper.find("audio").attr("alt") ||
-                $audioWrapper.find("audio").attr("data-src")
-            }<br><h6><b>音频加载失败。请尝试刷新页面并清除浏览器缓存。</b></h6></div>`
+        showErrorMsg(
+            $audioWrapper,
+            $audioWrapper.find("audio").attr("alt") ||
+                $audioWrapper.find("audio").attr("data-src"),
+            "音频加载失败。请尝试刷新页面并清除浏览器缓存。"
         );
-
-        // // 移除无效的音频组件
-        // $audioWrapper.remove();
     }
 });
