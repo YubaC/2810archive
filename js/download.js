@@ -96,15 +96,10 @@ $("#details img").each(async function () {
             if (xhr.status === 200) {
                 const blob = xhr.response;
                 const objectUrl = URL.createObjectURL(blob);
-                const reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onload = function () {
-                    const base64data = reader.result;
-                    $(img).attr("src", base64data);
-                    // 加载完成后移除边框和进度条
-                    $(img).css("border", "none");
-                    progressBar.parent().remove();
-                };
+                $(img).attr("src", objectUrl); // 将URL对象直接设置为图片的src属性
+                // 加载完成后移除边框和进度条
+                $(img).css("border", "none");
+                progressBar.parent().remove();
             } else {
                 console.error(`Failed to fetch image: ${src}`);
                 $(img).after(
