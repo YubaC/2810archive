@@ -126,13 +126,15 @@
                 return HTMLElement.title;
             }
             // 从路径中获取最后一个斜杠的位置
-            const lastSlashIndex = HTMLElement.src.lastIndexOf('/') || HTMLElement.href.lastIndexOf('\\');
+            const lastSlashIndex = decodeURIComponent(HTMLElement.src).lastIndexOf('/') || decodeURIComponent(HTMLElement.href).lastIndexOf('/');
+            console.log(HTMLElement, lastSlashIndex);
             // 如果找不到斜杠，则返回整个路径
             if (lastSlashIndex === -1) {
                 return decodeURIComponent(HTMLElement.src || HTMLElement.href);
             }
+            console.log(HTMLElement.src.substring(lastSlashIndex + 1));
             // 否则，返回最后一个斜杠之后的部分
-            return decodeURIComponent(HTMLElement.src.substring(lastSlashIndex + 1) || HTMLElement.href.substring(lastSlashIndex + 1));
+            return decodeURIComponent(HTMLElement.src).substring(lastSlashIndex + 1) || decodeURIComponent(HTMLElement.href).substring(lastSlashIndex + 1);
         }
 
         // marked
@@ -214,6 +216,16 @@
             const html = marked.parse(content);
             const detailsEl = $("#details");
             detailsEl.html(html);
+
+            detailsEl.find("[src]").each(function () {
+                // 把\替换成/
+                $(this).attr("src", encodeURIComponent(decodeURIComponent($(this).attr("src")).replace(/\\/g, "/")));
+            });
+
+            detailsEl.find("[href]").each(function () {
+                // 把\替换成/
+                $(this).attr("href", encodeURIComponent(decodeURIComponent($(this).attr("href")).replace(/\\/g, "/")));
+            });
 
             // 将所有本地链接改为 JavaScript 链接，以防止页面跳转
             detailsEl.find("a[href]:not([href^='http'])").each(function () {
