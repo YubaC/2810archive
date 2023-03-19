@@ -113,6 +113,28 @@
     <script>
         const url = getUrlParam("url")[0] || "";
 
+        /**
+         * 从 URL 中获取文件名
+         * @param {HTMLElement} HTMLElement HTML元素
+         * @returns {string} 文件名
+         */
+        function getFileName(HTMLElement) {
+            // 如果有alt或title属性，则使用它们作为文件名
+            if (HTMLElement.alt) {
+                return HTMLElement.alt;
+            } else if (HTMLElement.title) {
+                return HTMLElement.title;
+            }
+            // 从路径中获取最后一个斜杠的位置
+            const lastSlashIndex = HTMLElement.src.lastIndexOf('/') || HTMLElement.href.lastIndexOf('\\');
+            // 如果找不到斜杠，则返回整个路径
+            if (lastSlashIndex === -1) {
+                return decodeURIComponent(HTMLElement.src || HTMLElement.href);
+            }
+            // 否则，返回最后一个斜杠之后的部分
+            return decodeURIComponent(HTMLElement.src.substring(lastSlashIndex + 1) || HTMLElement.href.substring(lastSlashIndex + 1));
+        }
+
         // marked
         // marked.setOptions({
         //     renderer: new marked.Renderer(),
@@ -200,10 +222,16 @@
             });
 
             detailsEl.find('img:not([src^="http"])').each(function () {
+                const $imgWrapper = $("<div></div>");
+                $(this).attr("data-name", getFileName(this));
+
                 // 更换图片的 src 属性为 data-src 属性，并替换加载中的图片
                 $(this).attr("data-src", $(this).attr("src"));
                 // $(this).attr("src", "./images/loading.jpg");
                 $(this).attr("src", "https://gcore.jsdelivr.net/gh/YubaC/2810archive/images/loading.jpg");
+                $imgWrapper.append($(this).clone());
+
+                $(this).replaceWith($imgWrapper);
 
                 // 为加载中的图片添加边框
                 // $(this).css("border", "2px solid #ccc");
@@ -218,7 +246,10 @@
             });
 
             detailsEl.find("audio").each(function () {
-                $(this).attr("data-src", $(this).attr("src"));
+                const $audioWrapper = $("<div class='d-flex align-items-center'></div>");
+                $(this).attr("data-name", getFileName(this));
+                $audioWrapper.append($(this).clone());
+                $(this).replaceWith($audioWrapper);
             });
 
             // 动态加载 download.js 脚本

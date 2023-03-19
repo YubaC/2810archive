@@ -174,15 +174,15 @@ $("#details img").each(async function () {
                 const errorMsg = `Failed to fetch image: ${src}`;
                 console.error(errorMsg);
                 showErrorMsg(
-                    img,
-                    $(img).attr("alt") || $(img).attr("data-src"),
+                    $(img).parent(),
+                    $(img).attr("data-name"),
                     "图片加载失败。请尝试刷新页面并清除浏览器缓存。"
                 );
                 // 加载失败时移除进度条
                 // // 加载失败时移除边框和进度条
                 // $(img).css("border", "none");
                 progressBar.parent().remove();
-                $(img).remove();
+                $(img).parent().remove();
             }
         });
         xhr.addEventListener("progress", (e) => {
@@ -195,15 +195,13 @@ $("#details img").each(async function () {
         xhr.addEventListener("error", (e) => {
             const errorMsg = "Failed to fetch image.";
             console.error(errorMsg);
-            // 删除下面的alt
-            $(img).next().remove();
             // 显示错误信息
             showErrorMsg(
-                img,
-                $(img).attr("alt") || $(img).attr("data-src"),
+                $(img).parent(),
+                $(img).attr("data-name"),
                 "图片加载失败。请尝试刷新页面并清除浏览器缓存。"
             );
-            $(img).remove();
+            $(img).parent().remove();
             // 删除进度条
             progressBar.parent().remove();
             throw new Error(errorMsg);
@@ -214,15 +212,13 @@ $("#details img").each(async function () {
         console.error(err);
         progressBar.removeClass("active-bar");
 
-        // 删除下面的alt
-        $(img).next().remove();
         // 显示错误信息
         showErrorMsg(
-            img,
-            $(img).attr("alt") || $(img).attr("data-src"),
+            $(img).parent(),
+            $(img).attr("data-name"),
             "无网络连接或图片已失效。请检查网络连接并向我们反馈这个错误。"
         );
-        $(img).remove();
+        $(img).parent().remove();
         // 删除进度条
         progressBar.parent().remove();
     }
@@ -236,11 +232,12 @@ $('#details audio:not([src^="http"])').each(async function () {
     }
 
     // 添加加载动画和音频组件
-    const $audioWrapper = $("<div class='d-flex align-items-center'></div>");
+    // const $audioWrapper = $("<div class='d-flex align-items-center'></div>");
+    const $audioWrapper = $(this).parent();
     const $loadingIcon = $("<i class='fas fa-circle-notch fa-spin me-2'></i>");
-    $audioWrapper.append($loadingIcon, $(this).clone());
-
-    $(this).replaceWith($audioWrapper);
+    // 最前面添加加载动画
+    $audioWrapper.prepend($loadingIcon);
+    // $(this).replaceWith($audioWrapper);
 
     let download_url;
     try {
@@ -276,8 +273,7 @@ $('#details audio:not([src^="http"])').each(async function () {
                 // 添加加载失败提示
                 showErrorMsg(
                     $audioWrapper,
-                    $audioWrapper.find("audio").attr("alt") ||
-                        $audioWrapper.find("audio").attr("data-src"),
+                    $audioWrapper.find("audio").attr("data-name"),
                     "音频加载失败。请尝试刷新页面并清除浏览器缓存。"
                 );
 
@@ -315,8 +311,7 @@ $('#details audio:not([src^="http"])').each(async function () {
         // 添加加载失败提示
         showErrorMsg(
             $audioWrapper,
-            $audioWrapper.find("audio").attr("alt") ||
-                $audioWrapper.find("audio").attr("data-src"),
+            $audioWrapper.find("audio").attr("data-name"),
             "无网络连接或音频已失效。请检查网络连接并向我们反馈这个错误。"
         );
     }
