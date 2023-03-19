@@ -144,6 +144,9 @@ $("#details img").each(async function () {
         xhr.addEventListener("error", (e) => {
             const errorMsg = "Failed to fetch image.";
             console.error(errorMsg);
+            // 删除下面的alt
+            $(img).next().remove();
+            // 显示错误信息
             showErrorMsg(
                 img,
                 $(img).attr("alt") || $(img).attr("data-src"),
@@ -160,6 +163,9 @@ $("#details img").each(async function () {
         console.error(err);
         progressBar.removeClass("active-bar");
 
+        // 删除下面的alt
+        $(img).next().remove();
+        // 显示错误信息
         showErrorMsg(
             img,
             $(img).attr("alt") || $(img).attr("data-src"),
@@ -190,7 +196,7 @@ function addProgressBar(element) {
 }
 
 // 处理音频
-$("#details audio").each(async function () {
+$('#details audio:not([src^="http"])').each(async function () {
     const src = $(this).attr("src");
     if (src.indexOf("http") !== -1) {
         return true;
@@ -223,6 +229,11 @@ $("#details audio").each(async function () {
             .on("error", (e) => {
                 // 报错
                 $audioWrapper.find(".fa-circle-notch").remove();
+                // 删除error事件
+                $audioWrapper.find("audio").off("error");
+
+                // 删除canplay事件
+                $audioWrapper.find("audio").off("canplay");
 
                 // 添加差号图标
                 $audioWrapper.prepend(
@@ -243,6 +254,11 @@ $("#details audio").each(async function () {
         // 监听 canplay 事件，移除加载动画
         $audioWrapper.find("audio").on("canplay", function () {
             $audioWrapper.find(".fa-circle-notch").remove();
+            // 删除error事件
+            $audioWrapper.find("audio").off("error");
+
+            // 删除canplay事件
+            $audioWrapper.find("audio").off("canplay");
 
             // 添加对号图标
             $audioWrapper.prepend(
@@ -268,7 +284,7 @@ $("#details audio").each(async function () {
             $audioWrapper,
             $audioWrapper.find("audio").attr("alt") ||
                 $audioWrapper.find("audio").attr("data-src"),
-            "音频加载失败。请尝试刷新页面并清除浏览器缓存。"
+            "无网络连接或音频已失效。请检查网络连接并向我们反馈这个错误。"
         );
     }
 });
