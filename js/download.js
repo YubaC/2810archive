@@ -3,18 +3,69 @@ const octokit = new Octokit({
     auth: token,
 });
 
+/**
+ * 返回用于请求的url
+ * @param {string} origionUrl The original url
+ */
+function getRequestUrl(origionUrl) {
+    // 处理 url
+    let url = origionUrl
+        .replace(/\/{2,}/g, "/")
+        .replace(/\/\.\//g, "/")
+        .replace(/\/\.$/, "");
+
+    // 将 url 分割成路径名和文件名两部分
+    let lastSlashIndex = url.lastIndexOf("/");
+    let path = url.substring(0, lastSlashIndex + 1);
+    let filename = url.substring(lastSlashIndex + 1);
+
+    // 处理路径名，去掉 ../ 和 ./
+    let pathArr = path.split("/");
+    let resultPathArr = [];
+    for (let i = 0; i < pathArr.length; i++) {
+        if (pathArr[i] === "..") {
+            resultPathArr.pop();
+        } else if (pathArr[i] !== "." && pathArr[i] !== "") {
+            resultPathArr.push(pathArr[i]);
+        }
+    }
+    let resultPath = resultPathArr.join("/");
+
+    // 返回处理后的 url
+    return resultPath + "/" + filename;
+}
+
 // 获取 Github 上的文件内容
 async function getFileContent(path) {
+    console.log(getRequestUrl(db.base + url + "/" + path));
     const res = await octokit.request(
         `GET /repos/{owner}/{repo}/contents/{path}?t=${new Date().getTime()}`,
         {
             owner: db.owner,
             repo: db.repo,
-            path: db.base + url + "/" + path,
+            path: getRequestUrl(db.base + url + "/" + path),
         }
     );
     const { download_url } = res.data;
     return { download_url };
+}
+
+function showErrorMsg(element, msg1, msg2) {
+    $(element).after(
+        `<div class="alert alert-danger">${msg1}<br><h6><b>${msg2}</b></h6></div>`
+    );
+}
+
+function addProgressBar(element) {
+    const progressBar = $(`<div class="progress">
+                              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
+                          </div>`)
+        .insertBefore(element)
+        .find(".progress-bar");
+    const updateProgressBar = (percentage) => {
+        progressBar.css("width", `${percentage}%`);
+    };
+    return { progressBar, updateProgressBar };
 }
 
 // 点击链接下载文件
@@ -176,24 +227,6 @@ $("#details img").each(async function () {
         progressBar.parent().remove();
     }
 });
-
-function showErrorMsg(element, msg1, msg2) {
-    $(element).after(
-        `<div class="alert alert-danger">${msg1}<br><h6><b>${msg2}</b></h6></div>`
-    );
-}
-
-function addProgressBar(element) {
-    const progressBar = $(`<div class="progress">
-                              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
-                          </div>`)
-        .insertBefore(element)
-        .find(".progress-bar");
-    const updateProgressBar = (percentage) => {
-        progressBar.css("width", `${percentage}%`);
-    };
-    return { progressBar, updateProgressBar };
-}
 
 // 处理音频
 $('#details audio:not([src^="http"])').each(async function () {

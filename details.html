@@ -199,11 +199,6 @@
                 $(this).attr("href", "javascript:void(0)");
             });
 
-            // 如果图片以./开头，则去除开头的./
-            detailsEl.find("img[src^='./']").each(function () {
-                $(this).attr("src", $(this).attr("src").slice(2));
-            });
-
             detailsEl.find('img:not([src^="http"])').each(function () {
                 // 更换图片的 src 属性为 data-src 属性，并替换加载中的图片
                 $(this).attr("data-src", $(this).attr("src"));
@@ -220,11 +215,6 @@
                 if (alt) {
                     $(this).after(`<div class="text-secondary small text-center">${alt}</div>`);
                 }
-            });
-
-            // 如果音频以./开头，则去除开头的./
-            detailsEl.find("audio[src^='./']").each(function () {
-                $(this).attr("src", $(this).attr("src").slice(2));
             });
 
             detailsEl.find("audio").each(function () {
