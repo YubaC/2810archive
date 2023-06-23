@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="css/common.css">
     <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="lib/jquery/js/jquery-3.6.3.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@5/marked.min.js"></script>
 
     <style>
         #details {
@@ -213,6 +213,25 @@
             document.title = `${title} | 二十八级十班安全局档案馆`;
 
             // 将正文内容转换成 HTML 格式，并将其插入到页面元素中
+            const renderer = new marked.Renderer();
+            renderer.table = (header, body) => {
+                return `<table class="table table-striped">\n<thead>\n${header}</thead>\n<tbody>\n${body}</tbody>\n</table>\n`;
+            };
+
+            marked.setOptions({
+                renderer: renderer,
+                gfm: true,
+                tables: true,
+                breaks: false,
+                pedantic: false,
+                sanitize: false,
+                smartLists: true,
+                smartypants: false,
+                highlight: function (code) {
+                    return hljs.highlightAuto(code).value;
+                }
+            });
+
             const html = marked.parse(content);
             const detailsEl = $("#details");
             detailsEl.html(html);
