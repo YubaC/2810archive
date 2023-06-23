@@ -58,9 +58,9 @@
                             <label class="form-check-label" for="images">图片</label>
                         </div>
                         <div class="form-check col-2 me-2">
-                            <input type="checkbox" class="form-check-input" id="videos" name="type" value="video"
-                                checked>
-                            <label class="form-check-label" for="videos">视频</label>
+                            <input type="checkbox" class="form-check-input" id="audiovisuals" name="type"
+                                value="audiovisual" checked>
+                            <label class="form-check-label" for="audiovisuals">影音</label>
                         </div>
                         <div class="form-check col-2 me-2">
                             <input type="checkbox" class="form-check-input" id="documents" name="type" value="document"
@@ -117,7 +117,7 @@
             var type = getUrlParam("type");
             if (type.length) {
                 $("#images").prop("checked", false);
-                $("#videos").prop("checked", false);
+                $("#audiovisuals").prop("checked", false);
                 $("#documents").prop("checked", false);
                 $("#others").prop("checked", false);
                 for (var i = 0; i < type.length; i++) {
@@ -125,7 +125,7 @@
                 }
             } else {
                 $("#images").prop("checked", true);
-                $("#videos").prop("checked", true);
+                $("#audiovisuals").prop("checked", true);
                 $("#documents").prop("checked", true);
                 $("#others").prop("checked", true);
             }
@@ -200,7 +200,7 @@
                             case "image":
                                 icon = "far fa-file-image";
                                 break;
-                            case "video":
+                            case "audiovisual":
                                 icon = "far fa-file-video";
                                 break;
                             case "document":
