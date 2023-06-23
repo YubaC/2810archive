@@ -1,4 +1,4 @@
-import { Octokit } from "https://cdn.skypack.dev/octokit";
+import { Octokit } from "https://esm.sh/@octokit/core@4.2.4";
 const octokit = new Octokit({
     auth: token,
 });
