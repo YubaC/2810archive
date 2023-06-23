@@ -19,7 +19,16 @@
         </ul>
     </div>
 
-    <!-- Dropdown -->
+    <form action="list.html" class="w-auto ms-4 me-4">
+        <div class="input-group">
+            <label for="search" class="form-label visually-hidden">输入关键字以搜索档案馆：</label>
+            <input type="text" class="form-control" id="nav-large-search-input" name="search" placeholder="搜索档案馆...">
+
+            <label for="search-submit-btn" class="visually-hidden">搜索</label>
+            <button id="search-submit-btn" type="submit" class="btn text-secondary"><i class="fas fa-search"
+                    aria-hidden="true"></i></button>
+        </div>
+    </form>
 
     <!-- Links -->
     <ul class="navbar-nav">
@@ -50,6 +59,18 @@
 
     <!-- Navbar links -->
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <form action="list.html" class="w-auto ms-4 me-4 mt-3">
+            <div class="input-group">
+                <label for="search" class="form-label visually-hidden">输入关键字以搜索档案馆：</label>
+                <input type="text" class="form-control" id="nav-small-search-input" name="search"
+                    placeholder="搜索档案馆...">
+
+                <label for="search-submit-btn2" class="visually-hidden">搜索</label>
+                <button id="search-submit-btn2" type="submit" class="btn text-secondary"><i class="fas fa-search"
+                        aria-hidden="true"></i></button>
+            </div>
+        </form>
+
         <ul class="navbar-nav ms-4 me-4 mt-3">
             <li class="nav-item">
                 <a class="nav-link" href="index.html">首页</a>
@@ -85,7 +106,21 @@
     }
 
     #nav-small,
-    #nav-large {
+    #nav-large,
+    #nav-small-search-input,
+    #nav-large-search-input {
         background-color: var(--bs-gray-200);
     }
+
+    #search-submit-btn,
+    #search-submit-btn2 {
+        border: 1px solid #ced4da;
+    }
 </style>
+
+<script>
+    $(function () {
+        $("#nav-small-search-input").val(getUrlParam("search")[0] || "");
+        $("#nav-large-search-input").val(getUrlParam("search")[0] || "");
+    });
+</script>
