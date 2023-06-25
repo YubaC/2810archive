@@ -316,3 +316,57 @@ $('#details audio:not([src^="http"])').each(async function () {
         );
     }
 });
+
+// 处理video
+$('#details video:not([data-src^="http"])').each(async function () {
+    const src = $(this).attr("data-src");
+    if (src.indexOf("http") !== -1) {
+        return true;
+    }
+
+    const $videoWrapper = $(this).parent();
+
+    let download_url;
+    try {
+        // 获取视频链接
+        const response = await getFileContent(decodeURIComponent(src));
+        download_url = response.download_url;
+
+        // 如果download_url不存在就直接跳到catch
+        if (!download_url) {
+            throw new Error("Invalid video url.");
+        }
+
+        // 更新音频组件的 src 属性
+        $videoWrapper
+            .find("video")
+            // .attr("src", download_url)
+            // 新建一个source标签，写入src属性
+            .append(`<source src="${download_url}" type="video/mp4">`)
+
+            // 错误处理
+            .on("error", (e) => {
+                // 删除error事件
+                $videoWrapper.find("video").off("error");
+
+                // 添加加载失败提示
+                showErrorMsg(
+                    $videoWrapper,
+                    $videoWrapper.find("video").attr("data-name"),
+                    "视频加载失败。请尝试刷新页面并清除浏览器缓存。"
+                );
+
+                throw new Error("Failed to fetch video.");
+            });
+    } catch (err) {
+        // 下载链接为空时，添加加载失败提示
+        console.error(err);
+
+        // 添加加载失败提示
+        showErrorMsg(
+            $videoWrapper,
+            $videoWrapper.find("video").attr("data-name"),
+            "无网络连接或视频已失效。请检查网络连接并向我们反馈这个错误。"
+        );
+    }
+});

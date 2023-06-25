@@ -283,6 +283,18 @@
                 $(this).replaceWith($audioWrapper);
             });
 
+            // 处理video
+            detailsEl.find("video").each(function () {
+                // 从source中获取src，写入data-src
+                const src = $(this).find("source").attr("src");
+                $(this).attr("data-src", src);
+                // 清空source
+                $(this).find("source").remove();
+                const $videoWrapper = $("<div class='d-flex align-items-center'></div>");
+                $videoWrapper.append($(this).clone());
+                $(this).replaceWith($videoWrapper);
+            });
+
             // 动态加载 download.js 脚本
             const script = document.createElement("script");
             script.type = "module";
